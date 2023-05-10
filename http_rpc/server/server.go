@@ -1,26 +1,20 @@
 package main
 
 import (
+	"learn_go/http_rpc/handler"
+	"learn_go/http_rpc/server_proxy"
 	"net"
 	"net/rpc"
-	"net/rpc/jsonrpc"
 )
-
-type HelloService struct{}
-
-func (s *HelloService) Hello(request string, reply *string) error {
-	*reply = "hello," + request
-	return nil
-}
 
 func main() {
 	listener, _ := net.Listen("tcp", ":8080")
 
-	_ = rpc.RegisterName("HelloService", &HelloService{})
-
+	//_ = rpc.RegisterName(handler.HelloServiceName, &handler.HelloService{})
+	server_proxy.RegisterHelloService(&handler.HelloService{})
 	for {
 		conn, _ := listener.Accept()
-		go rpc.ServeCodec(jsonrpc.NewServerCodec(conn))
+		go rpc.ServeConn(conn)
 	}
 
 }

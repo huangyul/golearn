@@ -2,16 +2,14 @@ package main
 
 import (
 	"fmt"
-	"net"
-	"net/rpc"
-	"net/rpc/jsonrpc"
+	"learn_go/http_rpc/client_proxy"
 )
 
 func main() {
-	conn, _ := net.Dial("tcp", ":8080")
-
-	client := rpc.NewClientWithCodec(jsonrpc.NewClientCodec(conn))
-	var reply = new(string)
-	client.Call("HelloService.Hello", "huang", reply)
-	fmt.Println(*reply)
+	//client, _ := rpc.Dial("tcp", ":8080")
+	HelloClient := client_proxy.NewHelloServiceClient("tcp", ":8080")
+	var reply = ""
+	//client.Call(handler.HelloServiceName+".Hello", "huang", &reply)
+	HelloClient.Hello("huang", &reply)
+	fmt.Println(reply)
 }
